@@ -1,6 +1,6 @@
 import { getFromSessionCache } from './session-cache.js'
 
-export const quoteController = ({ routeId, getViewModel }) => ({
+export const requestToUseController = ({ routeId, getViewModel }) => ({
   async handler(request, h) {
     const quoteData = getFromSessionCache(request)
     const baseViewModel = await getViewModel(quoteData)

@@ -1,5 +1,7 @@
 import routesNrlReference from './nrl-reference/routes.js'
 import routesEnterNrlReference from './enter-nrl-reference/routes.js'
+import routesCommitmentCertificate from './commitment-certificate/routes.js'
+import routesConfirmation from './confirmation/routes.js'
 import { registerRequestToUseSessionCookie } from './session-cookie.js'
 
 /**
@@ -25,7 +27,12 @@ export const requestToUse = {
     register(server) {
       registerRequestToUseSessionCookie(server)
 
-      server.route([...routesNrlReference, ...routesEnterNrlReference])
+      server.route([
+        ...routesNrlReference,
+        ...routesEnterNrlReference,
+        ...routesCommitmentCertificate,
+        ...routesConfirmation
+      ])
     }
   }
 }

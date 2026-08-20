@@ -1,0 +1,70 @@
+{% extends "layouts/page.njk" %}
+
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
+
+{% block beforeContent %}
+  {{ backLink({href: backLinkPath}) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+
+        {# boundaryFilename (below) is user-controlled. Safe here because
+           govukSummaryList escapes value.text (but NOT value.html), and the
+           backend validates it against a strict allowlist. Do NOT switch to html:. #}
+        {{ govukSummaryList({
+          classes: "govuk-!-margin-bottom-9",
+          rows: [
+            {
+              key: { text: "Planning application type" },
+              value: { text: planningTypeLabel },
+              actions: { items: [{ href: quoteRoutes.planningType + "?change=true", text: "Change", visuallyHiddenText: "planning application type" }] }
+            } if formSubmitData.planningType,
+            {
+              key: { text: "Housing" },
+              value: { text: 'Yes' }
+            },
+            {
+              key: { text: "Number of units" },
+              value: { text: formSubmitData.housingUnits },
+              actions: { items: [{ href: quoteRoutes.unitNumber + "?change=true", text: "Change", visuallyHiddenText: "number of units" }] }
+            } if formSubmitData.housingUnits,
+            {
+              key: { text: "Red line boundary" },
+              value: {
+                text: "Added"
+              },
+              actions: { items: [{ href: quoteRoutes.drawBoundary + "?change=true", text: "Change", visuallyHiddenText: "drawn red line boundary" }] }
+            } if formSubmitData.boundaryEntryType === 'draw',
+            {
+              key: { text: "Red line boundary" },
+              value: {
+                text: formSubmitData.boundaryFilename if formSubmitData.boundaryFilename else 'Uploaded'
+              },
+              actions: { items: [{ href: quoteRoutes.filePreview + "?change=true", text: "Change", visuallyHiddenText: "uploaded red line boundary" }] }
+            } if formSubmitData.boundaryEntryType === 'upload',
+            {
+              key: { text: "Email address" },
+              value: { text: formSubmitData.email },
+              actions: { items: [{ href: quoteRoutes.email + "?change=true", text: "Change", visuallyHiddenText: "email address" }] }
+            } if formSubmitData.email
+          ]
+        }) }}
+
+        <p class="govuk-body">You will receive an indicative nature restoration levy quote, based on the details you provided. For the purposes of section 72 of the Planning and Infrastructure Act 2025, this quote will not commit you to pay the nature restoration levy and will not disapply any relevant environmental obligations. A Local Planning Authority must not accept this quote as part of any planning and decision-making processes.</p>
+
+        <form method="post" novalidate data-disable-on-submit>
+          {% include "partials/csrf-token.njk" %}
+          <div class="govuk-button-group">
+            {{ govukButton({
+              text: "Confirm and submit"
+            }) }}
+            <a class="govuk-link" href="{{ quoteRoutes.deleteQuote }}">Delete</a>
+          </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
